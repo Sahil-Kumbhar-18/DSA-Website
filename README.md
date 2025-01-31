@@ -1,3 +1,3 @@
 # DSA-Website
 Representing various DSA Algorithm on website through Animation.
-creating small modules for eash algorithm.
+creating small modules for each algorithm.
