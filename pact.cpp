@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <queue>
 using namespace std;
 
 struct Node {
@@ -22,8 +21,8 @@ public:
         cin >> temp->key ;
         cout<<"Enter Value :";
         cin >> temp->val;
-        temp->left = temp->right = NULL;
-
+        temp->left = NULL;
+        temp->right=NULL;
         if (root == NULL) {
             root = temp;
         } else {
@@ -46,26 +45,18 @@ public:
             }
         }
     }
+    
     void Display(Node* root) {
-        if (root == NULL) {
-            cout << "Dictionary is empty!" << endl;
-            return;
+        if(root==NULL){
+          return;
         }
-        queue<Node*> q;
-        q.push(root);
-        while (!q.empty()) {
-            Node* crr = q.front(); 
-            q.pop(); 
-            cout << crr->key << " : " << crr->val << endl;
-            if (crr->left != NULL) {
-                q.push(crr->left);
-            }
-            if (crr->right != NULL) {
-                q.push(crr->right);
-            }
-        }
+        Display(root->left);
+        cout<<root->key<<" "<<root->val<<endl;
+        Display(root->right);
     }
+    
     void Search(Node* root){
+        int count=0;
         if(root==NULL){
          cout<<"root is NULL ";
          return;
@@ -76,49 +67,63 @@ public:
         Node* temp=root;
         while(temp!=NULL){
           if(temp->key==key){
+          count++;
           cout<<temp->key<<" "<<temp->val<<endl;
-           return;
+          cout<<"Number of comparisions :"<<count<<endl;
+          return;
          }
           else if(temp->key<key){
+             count++;
              temp=temp->right;
           }else{
+             count++;
              temp=temp->left;
           }
         }
         cout<<"Key not found";
     }
-    
-     Node* getKey(Node* root,string key){
-        if(root==NULL){
-           cout<<"root is NULL ";
-           return NULL;
-         }
-        Node* temp=root;
-        while(temp!=NULL){
-          if(temp->key==key){
-           return temp;
-         }
-          else if(temp->key<key){
-             temp=temp->right;
-          }else{
-             temp=temp->left;
-          }
-        }
-       return NULL;
+        
+    void Update(Node* root,string key,string newVal){
+     if(root->key==key){
+       root->val=newVal;
+     }else if(root->key>key){
+        Update(root->left,key,newVal);
+      }else{
+        Update(root->right,key,newVal);
+      }
+    }
+     
+    Node* Max(Node* left){
+      while(root->right!=NULL){
+        root=root->right;
+      }
+      return root;
     }
     
-    void Update(Node* root){
-     string key;
-     cout<<"Enter Key to Update";
-     cin>>key;
-     string newVal;
-     cout<<"Enter New value ";
-     cin>>newVal;
-     Node* crr=getKey(root, key);
-     if(crr==NULL){
-       cout<<"Key Not found ";
-     }
-     crr->val=newVal;
+    Node* getNode(Node* root,string u_key){
+      Node* crr=root;
+      if(crr->key==u_key){
+         return crr;
+      }else if(crr->key<u_key){
+         crr=crr->right;
+      }else{
+         crr=crr->left;
+      }
+      return NULL;
+    }
+    
+    void Delete(Node* root,string u_key){
+      if(root==NULL){
+        return;
+      }else{
+         Node* toDel=getNode(root,u_key);
+         if(toDel->left==NULL && toDel->right==NULL){
+           delete toDel;
+         }else if(toDel->)
+         
+      }
+    
+      
     }
 };
 
@@ -131,8 +136,13 @@ int main() {
     obj.Display(obj.root);
     cout<<"Searching ";
     obj. Search(obj.root);
-    obj.Update(obj.root);
+    string key;
+    cout<<"Enter Key to Update";
+    cin>>key;
+    string newVal;
+    cout<<"Enter New value ";
+    cin>>newVal;
+    obj.Update(obj.root,key,newVal);
     obj.Display(obj.root);
     return 0;
 }
-
