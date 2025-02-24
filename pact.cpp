@@ -92,57 +92,38 @@ public:
         Update(root->right,key,newVal);
       }
     }
-     
-    Node* Max(Node* left){
-      while(root->right!=NULL){
-        root=root->right;
-      }
-      return root;
-    }
-    
-    Node* getNode(Node* root,string u_key){
-      Node* crr=root;
-      if(crr->key==u_key){
-         return crr;
-      }else if(crr->key<u_key){
-         crr=crr->right;
-      }else{
-         crr=crr->left;
-      }
-      return NULL;
-    }
-    
-    void Delete(Node* root,string u_key){
-      if(root==NULL){
-        return;
-      }else{
-         Node* toDel=getNode(root,u_key);
-         if(toDel->left==NULL && toDel->right==NULL){
-           delete toDel;
-         }else if(toDel->)
-         
-      }
-    
-      
-    }
 };
 
 int main() {
     Dictionary obj;
-    obj.createNode();
-    obj.createNode();
-    obj.createNode();
-    obj.createNode();
-    obj.Display(obj.root);
-    cout<<"Searching ";
-    obj. Search(obj.root);
-    string key;
-    cout<<"Enter Key to Update";
-    cin>>key;
-    string newVal;
-    cout<<"Enter New value ";
-    cin>>newVal;
-    obj.Update(obj.root,key,newVal);
-    obj.Display(obj.root);
+    int choice;
+    do {
+        cout << "\n1. Insert Node\n2. Display Dictionary\n3. Search Key\n4. Update Value\n5. Exit\nEnter choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                obj.createNode();
+                break;
+            case 2:
+                obj.Display(obj.root);
+                break;
+            case 3:
+                obj.Search(obj.root);
+                break;
+            case 4:
+                string key, newVal;
+                cout << "Enter Key to Update: ";
+                cin >> key;
+                cout << "Enter New Value: ";
+                cin >> newVal;
+                obj.Update(obj.root, key, newVal);
+                break;
+            case 5:
+                cout << "Exiting...";
+                break;
+            default:
+                cout << "Invalid choice, try again.";
+        }
+    } while (choice != 5);
     return 0;
 }
