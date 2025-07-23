@@ -1,0 +1,437 @@
+student@student-OptiPlex-3010:~$ sudo mysql;
+[sudo] password for student: 
+Sorry, try again.
+[sudo] password for student: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.42-0ubuntu0.20.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| Lab                |
+| hp1                |
+| information_schema |
+| mydata             |
+| mysql              |
+| performance_schema |
+| stud               |
+| sys                |
+| teA                |
++--------------------+
+9 rows in set (0.03 sec)
+
+mysql> create database Banking;
+Query OK, 1 row affected (0.10 sec)
+
+mysql> use Banking;
+Database changed
+mysql> create table branch(branch_name varchar(255),branch_city varchar(255),assets varchar(255));
+Query OK, 0 rows affected (0.37 sec)
+
+mysql> create table customer(cust_name varchar(255),cust_street varchar(255),cust_only varchar(255));
+Query OK, 0 rows affected (0.36 sec)
+
+mysql> create table account(acc_no int,branch_name varchar(255),balance int);
+Query OK, 0 rows affected (0.38 sec)
+
+mysql> create table loan(loan_no int,branch_name varchar(255),amount int);
+Query OK, 0 rows affected (0.34 sec)
+
+mysql> create table loan(cust_name varchar(255),acount_no int);
+ERROR 1050 (42S01): Table 'loan' already exists
+mysql> create table depositor(cust_name varchar(255),acount_no int);
+Query OK, 0 rows affected (0.33 sec)
+
+mysql> create table borower(cust_name varchar(255),loan_no int);
+Query OK, 0 rows affected (0.36 sec)
+
+mysql> alter table branch drop column branch_name;
+Query OK, 0 rows affected (0.78 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table branch add column branch_name varchar(255) primary key;
+Query OK, 0 rows affected (0.72 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc branch;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| branch_city | varchar(255) | YES  |     | NULL    |       |
+| assets      | varchar(255) | YES  |     | NULL    |       |
+| branch_name | varchar(255) | NO   | PRI | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> alter table customer cust_name primary key;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'cust_name primary key' at line 1
+mysql> alter table customer add column cust_name varchar(255) primary key;
+ERROR 1060 (42S21): Duplicate column name 'cust_name'
+mysql> ALTER TABLE table_name
+    -> ADD CONSTRAINT constraint_name PRIMARY KEY (column_name);
+ERROR 1146 (42S02): Table 'Banking.table_name' doesn't exist
+mysql> ALTER TABLE customer ADD CONSTRAINT cust_name PRIMARY KEY (cust_name);
+Query OK, 0 rows affected (0.82 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc customer;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| cust_name   | varchar(255) | NO   | PRI | NULL    |       |
+| cust_street | varchar(255) | YES  |     | NULL    |       |
+| cust_only   | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE account ADD CONSTRAINT acc_no PRIMARY KEY (acc_no);
+Query OK, 0 rows affected (0.88 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc account;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| acc_no      | int          | NO   | PRI | NULL    |       |
+| branch_name | varchar(255) | YES  |     | NULL    |       |
+| balance     | int          | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE account ADD CONSTRAINT fk_branch_name FOREIGN KEY (branch_name);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> ALTER TABLE account ADD CONSTRAINT branch_name FOREIGN KEY (branch_name);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> ALTER TABLE account
+    -> ADD CONSTRAINT fk_branch_name
+    -> FOREIGN KEY (branch_name)
+    -> REFERENCES branch(branch_name);
+Query OK, 0 rows affected (1.36 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE loan ADD CONSTRAINT fk_ FOREIGN KEY (branch_name) REFERENCES account(branch_name);
+Query OK, 0 rows affected (1.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE depositor ADD CONSTRAINT fk_ FOREIGN KEY (cust_name) REFERENCES customer(cust_name);
+ERROR 1826 (HY000): Duplicate foreign key constraint name 'fk_'
+mysql> ALTER TABLE depositor ADD CONSTRAINT fk_cust_name FOREIGN KEY (cust_name) REFERENCES customer(cust_name);
+Query OK, 0 rows affected (1.54 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE depositor ADD CONSTRAINT fk_acount_no FOREIGN KEY (acount_no) REFERENCES account(acc_no);
+Query OK, 0 rows affected (1.28 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE borower ADD CONSTRAINT fk_cust_name FOREIGN KEY (cust_name) REFERENCES customer(cust_name);
+ERROR 1826 (HY000): Duplicate foreign key constraint name 'fk_cust_name'
+mysql> ALTER TABLE borower ADD CONSTRAINT fk_cust_name FOREIGN KEY (cust_name) REFERENCES depositor(cust_name);
+ERROR 1826 (HY000): Duplicate foreign key constraint name 'fk_cust_name'
+mysql> desc branch;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| branch_city | varchar(255) | YES  |     | NULL    |       |
+| assets      | varchar(255) | YES  |     | NULL    |       |
+| branch_name | varchar(255) | NO   | PRI | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc customer;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| cust_name   | varchar(255) | NO   | PRI | NULL    |       |
+| cust_street | varchar(255) | YES  |     | NULL    |       |
+| cust_only   | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc account;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| acc_no      | int          | NO   | PRI | NULL    |       |
+| branch_name | varchar(255) | YES  | MUL | NULL    |       |
+| balance     | int          | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc loan;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| loan_no     | int          | YES  |     | NULL    |       |
+| branch_name | varchar(255) | YES  | MUL | NULL    |       |
+| amount      | int          | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc depostior;
+ERROR 1146 (42S02): Table 'Banking.depostior' doesn't exist
+mysql> desc depositor;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| cust_name | varchar(255) | YES  | MUL | NULL    |       |
+| acount_no | int          | YES  | MUL | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc borower;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| cust_name | varchar(255) | YES  |     | NULL    |       |
+| loan_no   | int          | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> ALTER TABLE borower ADD CONSTRAINT fk_cust_name FOREIGN KEY (cust_name) REFERENCES customer(cust_name);
+ERROR 1826 (HY000): Duplicate foreign key constraint name 'fk_cust_name'
+mysql> ALTER TABLE borower ADD CONSTRAINT fk_cust_name2 FOREIGN KEY (cust_name) REFERENCES customer(cust_name);
+Query OK, 0 rows affected (1.22 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE borower ADD CONSTRAINT fk_loan_no2 FOREIGN KEY (loan_no) REFERENCES loan(loan_no);
+ERROR 1822 (HY000): Failed to add the foreign key constraint. Missing index for constraint 'fk_loan_no2' in the referenced table 'loan'
+mysql> ALTER TABLE borower ADD CONSTRAINT fk_loan_no FOREIGN KEY (loan_no) REFERENCES loan(loan_no);
+ERROR 1822 (HY000): Failed to add the foreign key constraint. Missing index for constraint 'fk_loan_no' in the referenced table 'loan'
+mysql> ALTER TABLE loan ADD CONSTRAINT loan_no PRIMARY KEY (loan_no);
+Query OK, 0 rows affected (1.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE borower ADD CONSTRAINT fk_loan_no FOREIGN KEY (loan_no) REFERENCES loan(loan_no);
+Query OK, 0 rows affected (1.21 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc branch;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| branch_city | varchar(255) | YES  |     | NULL    |       |
+| assets      | varchar(255) | YES  |     | NULL    |       |
+| branch_name | varchar(255) | NO   | PRI | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc customer;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| cust_name   | varchar(255) | NO   | PRI | NULL    |       |
+| cust_street | varchar(255) | YES  |     | NULL    |       |
+| cust_only   | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> desc account;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| acc_no      | int          | NO   | PRI | NULL    |       |
+| branch_name | varchar(255) | YES  | MUL | NULL    |       |
+| balance     | int          | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc loan;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| loan_no     | int          | NO   | PRI | NULL    |       |
+| branch_name | varchar(255) | YES  | MUL | NULL    |       |
+| amount      | int          | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc depositor;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| cust_name | varchar(255) | YES  | MUL | NULL    |       |
+| acount_no | int          | YES  | MUL | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc borower;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| cust_name | varchar(255) | YES  | MUL | NULL    |       |
+| loan_no   | int          | YES  | MUL | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> INSERT INTO your_table_name (branch_city, assets, branch_name) VALUES
+    -> ('New York', '1000000', 'NY001'),
+    -> ('Los Angeles', '1500000', 'LA002'),
+    -> ('Chicago', '1200000', 'CH003'),
+    -> (NULL, '500000', 'TX004'),       -- branch_city can be NULL
+    -> ('Houston', NULL, 'HO005');      -- assets can be NULL
+ERROR 1146 (42S02): Table 'Banking.your_table_name' doesn't exist
+mysql> INSERT INTO branch (branch_city, assets, branch_name) VALUES ('narhe', '1000000', 'NR001'), ('katraj', '1500000', 'KJ002'), ('warje', '1200000', 'WR003'), ('deccan', '500000', 'DC004');
+Query OK, 4 rows affected (0.06 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM branch;
++-------------+---------+-------------+
+| branch_city | assets  | branch_name |
++-------------+---------+-------------+
+| deccan      | 500000  | DC004       |
+| katraj      | 1500000 | KJ002       |
+| narhe       | 1000000 | NR001       |
+| warje       | 1200000 | WR003       |
++-------------+---------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO customer (cust_name, cust_street, cust_only, branch_name) VALUES
+    -> ('Alice', '123 Main St', 'UniqueInfo1', 'DC004'),
+    -> ('Bob', '456 Oak Rd', 'UniqueInfo2', 'KJ002'),
+    -> ('Charlie', '789 Pine Ln', 'UniqueInfo3', 'NR001'),
+    -> ('Diana', '101 Maple Ave', 'UniqueInfo4', 'WR003');
+ERROR 1054 (42S22): Unknown column 'branch_name' in 'field list'
+mysql> INSERT INTO customer (cust_name, cust_street, cust_only) VALUES ('sahil', 'narhe 123', 'UniqueInfo1'), ('prasad', 'sits hostel', 'Uniqu
+eInfo2'), ('anil', 'building ', 'UniqueInfo3'), ('vaibhav', 'karvenagar 169', 'UniqueInfo4');
+Query OK, 4 rows affected (0.07 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM customer;
++-----------+----------------+-------------+
+| cust_name | cust_street    | cust_only   |
++-----------+----------------+-------------+
+| anil      | building       | UniqueInfo3 |
+| prasad    | sits hostel    | UniqueInfo2 |
+| sahil     | narhe 123      | UniqueInfo1 |
+| vaibhav   | karvenagar 169 | UniqueInfo4 |
++-----------+----------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO account (acc_no, branch_name, balance) VALUES
+    -> (1001, 'DC004', 25000),
+    -> (1002, 'KJ002', 47000),
+    -> (1003, 'NR001', 32000),
+    -> (1004, 'WR003', 15000),
+    -> (1005, 'DC004', 38000);
+Query OK, 5 rows affected (0.06 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM account;
++--------+-------------+---------+
+| acc_no | branch_name | balance |
++--------+-------------+---------+
+|   1001 | DC004       |   25000 |
+|   1002 | KJ002       |   47000 |
+|   1003 | NR001       |   32000 |
+|   1004 | WR003       |   15000 |
+|   1005 | DC004       |   38000 |
++--------+-------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO loan (loan_no, branch_name, amount) VALUES
+    -> (2001, 'DC004', 100000),
+    -> (2002, 'KJ002', 250000),
+    -> (2003, 'NR001', 150000),
+    -> (2004, 'WR003', 300000),
+    -> (2005, 'DC004', 120000);
+Query OK, 5 rows affected (0.07 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM loan;
++---------+-------------+--------+
+| loan_no | branch_name | amount |
++---------+-------------+--------+
+|    2001 | DC004       | 100000 |
+|    2002 | KJ002       | 250000 |
+|    2003 | NR001       | 150000 |
+|    2004 | WR003       | 300000 |
+|    2005 | DC004       | 120000 |
++---------+-------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO depositor (cust_name, acount_no) VALUES
+    -> ('Alice', 1001),
+    -> ('Bob', 1002),
+    -> ('Charlie', 1003),
+    -> ('Diana', 1004),
+    -> ('Alice', 1005);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`Banking`.`depositor`, CONSTRAINT `fk_cust_name` FOREIGN KEY (`cust_name`) REFERENCES `customer` (`cust_name`))
+mysql> ELECT * FROM customer;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ELECT * FROM customer' at line 1
+mysql> +-----------+----------------+-------------+
+    -> | cust_name | cust_street    | cust_only   |
+    -> +-----------+----------------+-------------+
+    -> | anil      | building       | UniqueInfo3 |
+    -> | prasad    | sits hostel    | UniqueInfo2 |
+    -> | sahil     | narhe 123      | UniqueInfo1 |
+    -> | vaibhav   | karvenagar 169 | UniqueInfo4 |
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '+-----------+----------------+-------------+
+| cust_name | cust_street    | cust' at line 1
+mysql> INSERT INTO depositor (cust_name, acount_no) VALUES
+    -> ('anil', 1001),
+    -> ('prasad', 1002),
+    -> ('sahil', 1003),
+    -> ('vaibhav', 1004),
+    -> ('anil', 1005);
+Query OK, 5 rows affected (0.07 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO borower (cust_name, loan_no) VALUES
+    -> ('anil', 2001),
+    -> ('prasad', 2002),
+    -> ('sahil', 2003),
+    -> ('vaibhav', 2004),
+    -> ('anil', 2005);
+Query OK, 5 rows affected (0.08 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT
+    ->   c.cust_name,
+    ->   c.cust_street,
+    ->   c.cust_only,
+    ->   b.branch_name AS branch_name,
+    ->   b.branch_city,
+    ->   b.assets,
+    ->   a.acc_no,
+    ->   a.balance,
+    ->   l.loan_no,
+    ->   l.amount
+    -> FROM customer c
+    -> 
+    -> -- Join depositor to get accounts
+    -> LEFT JOIN depositor d ON c.cust_name = d.cust_name
+    -> LEFT JOIN account a ON d.acount_no = a.acc_no
+    -> 
+    -> -- Join branch via account.branch_name
+    -> LEFT JOIN branch b ON a.branch_name = b.branch_name
+    -> 
+    -> -- Join borower to get loans
+    -> LEFT JOIN borower bo ON c.cust_name = bo.cust_name
+    -> LEFT JOIN loan l ON bo.loan_no = l.loan_no
+    -> ;
++-----------+----------------+-------------+-------------+-------------+---------+--------+---------+---------+--------+
+| cust_name | cust_street    | cust_only   | branch_name | branch_city | assets  | acc_no | balance | loan_no | amount |
++-----------+----------------+-------------+-------------+-------------+---------+--------+---------+---------+--------+
+| anil      | building       | UniqueInfo3 | DC004       | deccan      | 500000  |   1001 |   25000 |    2001 | 100000 |
+| anil      | building       | UniqueInfo3 | DC004       | deccan      | 500000  |   1001 |   25000 |    2005 | 120000 |
+| anil      | building       | UniqueInfo3 | DC004       | deccan      | 500000  |   1005 |   38000 |    2001 | 100000 |
+| anil      | building       | UniqueInfo3 | DC004       | deccan      | 500000  |   1005 |   38000 |    2005 | 120000 |
+| prasad    | sits hostel    | UniqueInfo2 | KJ002       | katraj      | 1500000 |   1002 |   47000 |    2002 | 250000 |
+| sahil     | narhe 123      | UniqueInfo1 | NR001       | narhe       | 1000000 |   1003 |   32000 |    2003 | 150000 |
+| vaibhav   | karvenagar 169 | UniqueInfo4 | WR003       | warje       | 1200000 |   1004 |   15000 |    2004 | 300000 |
++-----------+----------------+-------------+-------------+-------------+---------+--------+---------+---------+--------+
+7 rows in set (0.00 sec)
+
+mysql> tee banking.txt;
+Logging to file 'banking.txt'
